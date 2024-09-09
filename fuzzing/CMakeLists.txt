@@ -1,13 +1,5 @@
 option(ENABLE_FUZZING "Create executables and targets for fuzzing cJSON with afl." Off)
 if (ENABLE_FUZZING)
-    # Find AFL_FUZZ program, use the variable if specified
-    if (NOT AFL_FUZZ)
-        find_program(AFL_FUZZ afl-fuzz)
-    endif()
-    if (NOT AFL_FUZZ)
-        message(FATAL_ERROR "Couldn't find afl-fuzz. Please set AFL_FUZZ path using -DAFL_FUZZ.")
-    endif()
-
     add_executable(afl-main afl.c)
     target_link_libraries(afl-main "${CJSON_LIB}")
 
@@ -22,11 +14,6 @@ if (ENABLE_FUZZING)
     endif()
 
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-error")
-
-    # add_custom_target(afl
-    #     COMMAND "${AFL_FUZZ}" -i "${CMAKE_CURRENT_SOURCE_DIR}/inputs" -o "${CMAKE_CURRENT_BINARY_DIR}/findings" -x "${CMAKE_CURRENT_SOURCE_DIR}/json.dict" -- "${CMAKE_CURRENT_BINARY_DIR}/afl-main" "@@" "${fuzz_print_parameter}"
-    #     DEPENDS afl-main)
-
 
 endif()
 
